@@ -1,4 +1,4 @@
-# CacheSimulation
+# Cache simulation
 ## Description
 - Language: C++
 - Test cases:
