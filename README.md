@@ -13,9 +13,9 @@ A-way set associativity. The second input file assigns a series of block address
 
 ## Compile & Execute
 - (on Windows)
-    g++ main.cpp main.exe
+    g++ main.cpp main.exe <br>
     main.exe cache#.org reference.lst outputFile.rpt
     
 - (on Linux)
-    g++ main.cpp main
+    g++ main.cpp main <br>
     main.exe cache#.org reference.lst outputFile
