@@ -12,10 +12,10 @@ This program is to simulate cache behavior. The first input files gives a cache 
 A-way set associativity. The second input file assigns a series of block address. This program will count how many times it misses and write the record into a new file.
 
 ## Compile & Execute
-- (on Windows)
+- (on Windows) <br>
     g++ main.cpp main.exe <br>
     main.exe cache#.org reference.lst outputFile.rpt
     
-- (on Linux)
+- (on Linux) <br>
     g++ main.cpp main <br>
     main.exe cache#.org reference.lst outputFile
