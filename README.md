@@ -13,9 +13,9 @@ A-way set associativity. The second input file assigns a series of referenced bl
 
 ## Compile & Execute
 - (on Windows) <br>
-    g++ main.cpp main.exe <br>
+    g++ main.cpp -o main.exe <br>
     main.exe cache#.org reference.lst outputFile.rpt
     
 - (on Linux) <br>
-    g++ main.cpp main <br>
+    g++ main.cpp -o main <br>
     main.exe cache#.org reference.lst outputFile
