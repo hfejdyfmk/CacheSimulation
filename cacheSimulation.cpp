@@ -5,8 +5,6 @@
 
 using namespace std;
 
-//linux: not exe but ((space))
-//binary to int pros: comparing tag w/ "==" 
 class block{
     public:
     int index; //LSB
@@ -14,11 +12,13 @@ class block{
     int nru_bit;
 };
 
+//convert binary to decimal
 int bi_to_de(char* bi, int n){
     int sum = 0;
     for (int i=0; i<n ; i++){
         if (bi[i] == '1'){ 
-            int b; //pow( float x, float y )	回傳 x 的 y 次方	float
+            int b;
+            //pow(x, y): "x to the power of y". return type: float.
             b = int(pow(2, n-1-i)) * 1;
             sum = sum + b;
         }
@@ -26,11 +26,13 @@ int bi_to_de(char* bi, int n){
     return sum;
 }
 
+//compute number of bits to represent a number
 int num_bits(int n){
     n = log2(n);
     return n;
 }
 
+//compute index of a block and represent it in decimal
 int indexInDe(char* addr, int offsetBits, int indexBits, int n){
     char Id[indexBits];
     for(int i=0; i<indexBits; i++){
@@ -40,6 +42,7 @@ int indexInDe(char* addr, int offsetBits, int indexBits, int n){
     return index;
 }
 
+//compute tag of a block and represent it in decimal
 int tagInDe(char* addr, int offsetBits, int indexBits, int n){
     int rest = offsetBits + indexBits;
     int tagBits = n - rest;
@@ -57,35 +60,28 @@ int main(int argc, char *argv[3]){
     //read from cache#.org
     int addressBit, blockSize, cacheSet, associativity = 0;
     string x; // those we don't need
-    ifstream doc_cache (argv[1]);
-    ofstream output_file (argv[3]);
+    ifstream doc_cache (argv[1]); // take the first argument as a input file
+    ofstream output_file (argv[3]); // take the third argument as a output file
     output_file.clear();
     if (doc_cache.is_open())
     {
         /*
+        example: 
         Address_bits: 8
         Block_size: 4
         Cache_sets: 8
         Associativity: 1
         */
         doc_cache >> x >> addressBit;
-        output_file << x << " " << addressBit << endl; 
+        output_file << "Address bits: " << addressBit << endl; 
         doc_cache >> x >> blockSize;
-        output_file << x << " " << blockSize << endl;
+        output_file << "Block size: " << blockSize << endl;
         doc_cache >> x >> cacheSet;
-        output_file << x << " " << cacheSet << endl;
+        output_file << "Cache sets: " << cacheSet << endl;
         doc_cache >> x >> associativity;
-        output_file << x << " " << associativity << endl;
+        output_file << "Associativity: " << associativity << endl;
         output_file << endl;
-        /*
-        cout << addrBits << endl;
-        cout << blockSize << endl;
-        cout << cacheSets << endl;
-        cout << associativity << endl;
-        */
         doc_cache.close();
-
-        
     }
     else cout << "open doc_cache failed";
 
@@ -122,9 +118,10 @@ int main(int argc, char *argv[3]){
     }
     else cout << "open doc_ref failed";
 
-    //initialize the cache
+    // create a cache
     block cache[cacheSet][associativity];
-
+  
+    //initialize the cache
     for (int i=0; i<cacheSet; i++){
         for (int j=0; j<associativity; j++){
             cache[i][j].index = -1;
@@ -132,30 +129,27 @@ int main(int argc, char *argv[3]){
             cache[i][j].nru_bit = 1; // turn to 0 when use;
         }
     }
-/*
-    for (int i=0; i<cacheSets; i++){
-        for (int j=0; j<associativity; j++){
-            cout << cache[i][j].index;
-            cout << cache[i][j].tag;
-            cout << cache[i][j].nru_bit;
-        }
-        cout << endl;
-    }
-*/  
+
     vector<bool> record;
+    
+    //loop until no more address
     while (1){
         char query[addressBit];
         doc_ref >> query;
         cout << "read: " << query ;
-        if (query[0] == '.' && query[1] == 'e'){ //if it is ".end"
+        //if it is ".end", go to the end of the program
+        if (query[0] == '.' && query[1] == 'e'){ 
             output_file << query << endl;
             output_file << endl;
             break;
         }
+        //else, continute to compute
         else{
-            int I = indexInDe(query, offsetBit, indexBit, addressBit);//if an binary address
+            //(binary address, number of offset bits, number of index bits, number of address bits)
+            int I = indexInDe(query, offsetBit, indexBit, addressBit);
             int T = tagInDe(query, offsetBit, indexBit, addressBit);
             bool hit = false;
+            //look up in the cache
             for (int i=0; i< associativity; i++){
                 if (cache[I][i].tag == T){ //if hit
                     cache[I][i].nru_bit = 0;
@@ -165,10 +159,12 @@ int main(int argc, char *argv[3]){
                     break;
                 }
             }
+            //if miss
             if (hit==false){
                 bool space = false;
                 record.push_back(1); //miss
-                for (int i=0; i< associativity; i++){ // if there is a space
+                // if there is a space
+                for (int i=0; i< associativity; i++){ 
                     if (cache[I][i].nru_bit == 1){
                         cache[I][i].index = I;
                         cache[I][i].tag = T;
@@ -177,6 +173,7 @@ int main(int argc, char *argv[3]){
                         break; 
                     }
                 }
+                //if there is not a space
                 if (space==false){ //NRU
                     for (int i = 0; i < associativity; i++){
                         cache[I][i].nru_bit = 1;
@@ -208,10 +205,7 @@ int main(int argc, char *argv[3]){
     }
     output_file << "Total cache miss count: " << missCount << endl;
     cout << "miss count: "<< missCount << endl;
-    doc_ref.close();// danger!! extreme case
+    doc_ref.close();
     output_file.close(); 
-    //}
     return 0;
-    
-
 }
