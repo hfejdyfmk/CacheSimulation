@@ -4,7 +4,6 @@
 - Test cases:
     - 1st input: cache#.org
     - 2nd input: reference#.lst
-    - output: record.rpt
 ## Introduction
 - Indexed policy: LSB
 - Replacement policy: NRU
