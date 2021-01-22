@@ -19,3 +19,5 @@ A-way set associativity. The second input file assigns a series of referenced bl
 - (on Linux) <br>
     g++ main.cpp -o main <br>
     main.exe cache#.org reference.lst outputFile
+
+![flow chart](https://github.com/hfejdyfmk/CacheSimulation/blob/main/flowChart.jpg)
